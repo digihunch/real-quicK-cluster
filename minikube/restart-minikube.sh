@@ -10,6 +10,7 @@ minikube stop
 minikube delete
 minikube start --memory=12288 --cpus=6 --kubernetes-version=$KUBE_VERSION --nodes $NODE_COUNT --container-runtime=$CRI --driver=hyperkit --disk-size=150g
 minikube addons enable metallb
+minikube addons enable metrics-server
 MINIKUBE_IP=$(minikube ip)
 expect << _EOF_
 spawn minikube addons configure metallb
