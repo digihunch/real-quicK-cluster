@@ -77,6 +77,7 @@ az aks create \
    --vm-set-type VirtualMachineScaleSets \
    --network-plugin azure \
    --network-policy calico \
+   --enable-managed-identity \
    --tags Owner=MyOwner
 ```
 Then we can update local kubectl context with the following command:
