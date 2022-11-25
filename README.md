@@ -44,6 +44,33 @@ To delete cluster
 kind delete cluster --name kind
 ```
 
+My test experience on MacBook (`uname -m` to tell cpu architecture)
+Minikube with Docker driver:
+- Works with both x86 and M1 processor
+- However Docker bridge has a [limitation](https://github.com/kubernetes/minikube/issues/13795) causing metallb load balancers not accessible from terminal
+
+Minikube with hyperkit driver:
+- Works very will with metallb (and ingress) on x86 processor
+- Hyperkit does not support M1 processor
+
+Minikube with qemu driver:
+- Never tested on Intel processor. 
+- With M1 processor, installation is complex and not working
+
+Minikube with virtualbox driver:
+- M1 processor not supported
+- Did not test with Intel processor
+
+Minikube with parallels driver:
+- Installation is too heavy, did not try further. 
+
+Minikube with vmware fusion driver:
+- Not free. Never tried.
+
+KinD:
+- Works well with both x86 and M1 processor
+- However Docker bridge has a limitation causing metallb load balancer not accessible from terminal
+
 ## Create a staging cluster
 Depending on the cloud platform, we need one or more of the CLI tools. Please refer to their respective instructions to install  and configure them. 
 * [awscli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html): If we use EKS, we rely on awscli to connect to resources in AWS. The credentials for programatic access is stored under profile. Instruction is [here](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html). 
