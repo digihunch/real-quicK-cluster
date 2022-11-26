@@ -12,15 +12,25 @@ CRI=containerd
 # Install hyperkit for x86
 CPU_ARCH=$(uname -m)
 if [[ $CPU_ARCH == "x86_64" ]]; then
+  echo "x86 CPU architecture detected. Minikube will use hyperkit driver"
   DRIVER=hyperkit
 elif [[ $CPU_ARCH == "arm64" ]]; then
+  echo "arm64 CPU architecture detected. Minikube cannot use hyperkit driver, but can install docker driver. Please make sure Docker is installed. Also bear in mind that you will not have access to metallb's load balancer IP due to a limitation with Docker."
+  read -r -p "Do you wish to contine? [y/N] " response
+  case "$response" in
+    [yY][eE][sS]|[yY]) 
+        echo "checking if docker CLI and daemon are running"
+        docker ps > /dev/null
+        ;;
+    *)
+        exit 0
+        ;;
+  esac
   DRIVER=docker
 else
    echo "Unsupported CPU architecture."
    exit 1;
 fi
-
-DRIVER=hyperkit    
 
 # Custom minikube profile
 PROFILE_NAME=rqc
