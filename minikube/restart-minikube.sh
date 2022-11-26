@@ -9,10 +9,18 @@ NODE_COUNT=3
 # containerd is the standard CRI 
 CRI=containerd
 
-# M1 processor, install Docker desktop and use docker as driver
-# Intel processor, use docker driver or hyperkit driver (requiring brew install hyperkit)
-# Currently, hyperkit does not support M1 processor
-DRIVER=docker    
+# Install hyperkit for x86
+CPU_ARCH=$(uname -m)
+if [[ $CPU_ARCH == "x86_64" ]]; then
+  DRIVER=hyperkit
+elif [[ $CPU_ARCH == "arm64" ]]; then
+  DRIVER=docker
+else
+   echo "Unsupported CPU architecture."
+   exit 1;
+fi
+
+DRIVER=hyperkit    
 
 # Custom minikube profile
 PROFILE_NAME=rqc
