@@ -1,5 +1,8 @@
 #! /bin/bash
 
+# Exit when any command fails
+set -e
+
 # Check version history https://kubernetes.io/releases/
 KUBE_VERSION=v1.24.3
 
@@ -12,14 +15,15 @@ CRI=containerd
 # Install hyperkit for x86
 CPU_ARCH=$(uname -m)
 if [[ $CPU_ARCH == "x86_64" ]]; then
-  echo "x86 CPU architecture detected. Minikube will use hyperkit driver"
+  echo "You are on x86 CPU architecture. Minikube will use the preferred driver (hyperkit)."
   DRIVER=hyperkit
 elif [[ $CPU_ARCH == "arm64" ]]; then
-  echo "arm64 CPU architecture detected. Minikube cannot use hyperkit driver, but can install docker driver. Please make sure Docker is installed. Also bear in mind that you will not have access to metallb's load balancer IP due to a limitation with Docker."
-  read -r -p "Do you wish to contine? [y/N] " response
+  printf '[Warning]'
+  echo "You are on arm64 CPU architecture. Minikube cannot install the preferred driver (hyperkit). However, we can instead install Docker driver, which has a limitation. You will not have access to metallb's load balancer IP directly from command console."
+  read -r -p "If you have Docker Desktop installed and running. Do you wish to contine? [y/N] " response
   case "$response" in
     [yY][eE][sS]|[yY]) 
-        echo "checking if docker CLI and daemon are running"
+        echo "Checking if docker CLI and daemon are running"
         docker ps > /dev/null
         ;;
     *)
@@ -51,3 +55,11 @@ expect "Enter Load Balancer Start IP:" { send "${MINIKUBE_IP%.*}.16\\r" }
 expect "Enter Load Balancer End IP:" { send "${MINIKUBE_IP%.*}.23\\r" }
 expect eof
 _EOF_
+
+if [[ $DRIVER == "docker" ]]; then
+  echo The docker driver uses bridge networking and does not support host networking. Therefore you cannot access the ingress IP from your command terminal.
+  echo You can however, spin up a troubleshooting container on the same bridge network and access ingress IP from there. For example:
+  echo docker run -it --net host nicolaka/netshoot 
+fi
+echo to destroy this cluster, run 
+echo minikube stop --profile=$PROFILE_NAME && minikube delete --profile=$PROFILE_NAME
