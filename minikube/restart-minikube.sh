@@ -62,4 +62,4 @@ if [[ $DRIVER == "docker" ]]; then
   echo docker run -it --net host nicolaka/netshoot 
 fi
 echo to destroy this cluster, run 
-echo minikube stop --profile=$PROFILE_NAME && minikube delete --profile=$PROFILE_NAME
+echo minikube stop --profile=$PROFILE_NAME "&&" minikube delete --profile=$PROFILE_NAME
