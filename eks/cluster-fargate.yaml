@@ -1,0 +1,44 @@
+# eksctl create cluster -f cluster-fargate.yaml --profile tftest
+# eksctl delete cluster -f cluster-fargate.yaml --profile tftest
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: orthweb-cluster-fargate
+  region: us-east-1
+  version: "1.23"
+privateCluster:
+  enabled: false
+  additionalEndpointServices:
+  - "cloudformation"
+  - "autoscaling"
+  - "logs"
+vpc:
+  autoAllocateIPv6: false
+  cidr: 192.168.0.0/16
+  clusterEndpoints:
+    privateAccess: false
+    publicAccess: true
+  manageSharedNodeSecurityGroupRules: true 
+  nat: 
+    gateway: Single
+availabilityZones: ['us-east-1a', 'us-east-1b', 'us-east-1c', 'us-east-1d']
+fargateProfiles:
+  - name: fp-default
+    selectors:
+      # All workloads in the "default" Kubernetes namespace will be
+      # scheduled onto Fargate:
+      - namespace: default
+      # All workloads in the "kube-system" Kubernetes namespace will be
+      # scheduled onto Fargate:
+      - namespace: kube-system
+  - name: fp-dev
+    selectors:
+      # All workloads in the "dev" Kubernetes namespace matching the following
+      # label selectors will be scheduled onto Fargate:
+      - namespace: dev
+        labels:
+          env: dev
+          checks: passed
+    tags:
+      env: dev
+      name: fp-dev
