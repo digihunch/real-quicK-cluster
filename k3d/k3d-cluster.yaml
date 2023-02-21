@@ -1,0 +1,26 @@
+# k3d cluster create --config k3d-cluster.yaml
+# k3d cluster delete --config k3d-cluster.yaml
+apiVersion: k3d.io/v1alpha3
+kind: Simple
+name: myCluster
+servers: 1
+agents: 3
+kubeAPI:
+  hostPort: "6550"
+ports:
+  - port: 8081:80
+    nodeFilters:
+      - loadbalancer
+  - port: 8443:443
+    nodeFilters:
+      - loadbalancer
+options:
+  k3d:
+    wait: true
+    loadbalancer:
+      configOverrides:
+        - settings.workerConnections=2048
+  kubeconfig:
+    updateDefaultKubeconfig: true
+    switchCurrentContext: true
+
