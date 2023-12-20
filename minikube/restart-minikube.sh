@@ -4,7 +4,7 @@
 set -e
 
 # Check version history https://kubernetes.io/releases/
-KUBE_VERSION=v1.26.1
+KUBE_VERSION=v1.29.0
 
 # node size of the cluster to create
 NODE_COUNT=3
