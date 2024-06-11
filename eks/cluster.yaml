@@ -3,7 +3,7 @@ kind: ClusterConfig
 metadata:
   name: orthweb-cluster
   region: us-east-1
-  version: "1.20"
+  version: "1.30"
 privateCluster:
   enabled: false
   additionalEndpointServices:

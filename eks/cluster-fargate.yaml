@@ -5,7 +5,7 @@ kind: ClusterConfig
 metadata:
   name: orthweb-cluster-fargate
   region: us-east-1
-  version: "1.23"
+  version: "1.30"
 privateCluster:
   enabled: false
   additionalEndpointServices:
