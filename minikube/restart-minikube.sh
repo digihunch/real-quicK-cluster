@@ -4,7 +4,7 @@
 set -e
 
 # Check version history https://kubernetes.io/releases/
-KUBE_VERSION=v1.29.0
+KUBE_VERSION=v1.32.0
 
 # node size of the cluster to create
 NODE_COUNT=3
@@ -21,14 +21,20 @@ case "$response" in
   [yY][eE][sS]|[yY]) 
       echo "Checking if docker CLI and daemon are running"
       docker ps > /dev/null
+      DRIVER=docker
       ;;
   *)
-      exit 0
+      if [ $(uname -p) = "i386" ]; then  
+        echo use hyperkit driver instead 
+        DRIVER=hyperkit
+      else
+        echo CPU architecture isnt fit for hyperkit driver.
+        exit 0
+      fi
       ;;
 esac
 
 # set CNI to cilium. latest version is up to minikube 
-CNI=auto
 
 read -r -p "Do you want to use Cilium as CNI? [y/N] " response
 case "$response" in
@@ -37,7 +43,7 @@ case "$response" in
     CNI=cilium
     ;;
   *)
-    exit 0
+    CNI=auto
     ;;
 esac
 
